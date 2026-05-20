@@ -5,6 +5,7 @@ import connectDB from "./config/connectDB.js"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRouter from "./routes/auth.routes.js"
+import userRouter from "./routes/user.routes.js"
 const port = process.env.PORT
 
 
@@ -20,6 +21,7 @@ app.use(cors({
 }))
 
 app.use("/api/auth",authRouter)
+app.use("/api/user", userRouter)
 
 app.get("/",(req,res)=>{
     res.send("Hello from server")
