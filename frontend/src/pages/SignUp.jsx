@@ -11,6 +11,8 @@ import { ClipLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/userSlice.js'
+import { signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../../utils/firebase.js'
 function SignUp() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -43,6 +45,19 @@ function SignUp() {
             )
         }
 
+    }
+
+    const googleSignUp = async()=>{
+        try{
+            const response = await signInWithPopup(auth, provider)
+            const {displayName,email} = response.user
+            const result = await axios.post(serverUrl + "/api/auth/googleauth", { name:displayName, email, role }, { withCredentials: true })
+            dispatch(setUserData(result.data))
+            navigate("/")
+            toast.success("SignUp Successfully")
+        }catch(error){
+            toast.error("Failed to sign up with Google")
+        }
     }
 
     return (
@@ -84,7 +99,10 @@ function SignUp() {
                         <div className='w-[50%] text-[15px] text-[#6f6f6f] flex items-center justify-center '>Or continue with</div>
                         <div className='w-[25%] h-[0.5px] bg-[#c4c4c4]'></div>
                     </div>
-                    <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center  '><img src={google} alt="" className='w-[25px]' /><span className='text-[18px] text-gray-500'>oogle</span> </div>
+                    <div className='w-[80%] h-[40px] border-1 border-[black] rounded-[5px] flex items-center justify-center cursor-pointer' onClick={googleSignUp}>
+                        <img src={google} alt="" className='w-[25px]' />
+                        <span className='text-[18px] text-gray-500'>oogle</span>
+                    </div>
                     <div className='text-[#6f6f6f]'>Already have an account? <span className='underline underline-offset-1 text-[black] cursor-pointer' onClick={() => navigate("/login")}>Login</span></div>
 
                 </div>

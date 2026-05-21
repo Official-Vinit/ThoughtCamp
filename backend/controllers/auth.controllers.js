@@ -188,11 +188,45 @@ export const resetPassword = async (req, res) => {
         user.isOtpVerified = false;
         user.resetOtp = undefined;
         user.otpExpires = undefined;
-        
+
         await user.save();
         return res.status(200).json({ message: "Password reset successful" })
 
     } catch (error) {
         return res.status(500).json({ message: "Reset Password error" })
+    }
+}
+
+export const googleAuth = async (req, res) => {
+    try {
+        const { name, email } = req.body
+        let user = await User.findOne({ email })
+
+        if (!user) {
+            const { role } = req.body
+            user = await User.create({
+                name,
+                email,
+                role
+            })
+        }
+
+        const token = genToken(user._id)
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "Lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+        return res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        })
+    } catch (error) {
+        return res.status(500).json({ message: "Google auth error" })
     }
 }
