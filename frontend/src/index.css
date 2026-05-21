@@ -4,3 +4,10 @@
 * {
     font-family: 'Outfit', sans-serif;
 }
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+    cursor: pointer;
+}
