@@ -12,6 +12,8 @@ import { toast } from 'react-toastify'
 import { ClipLoader } from 'react-spinners'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/userSlice.js'
+import { signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../../utils/firebase.js'
 
 
 function Login() {
@@ -21,6 +23,7 @@ function Login() {
     let [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
+    
     const handleLogin = async () => {
         setLoading(true)
         try {
@@ -42,6 +45,19 @@ function Login() {
             )
         }
 
+    }
+
+    const googleSignUp = async()=>{
+        try{
+            const response = await signInWithPopup(auth, provider)
+            const {displayName,email} = response.user
+            const result = await axios.post(serverUrl + "/api/auth/googleauth", { name:displayName, email }, { withCredentials: true })
+            dispatch(setUserData(result.data))
+            navigate("/")
+            toast.success("Login Successfully")
+        }catch(error){
+            toast.error("Failed to login with Google")
+        }
     }
     return (
         <div className='bg-[#dddbdb] w-[100vw] h-[100vh] flex items-center justify-center flex-col gap-3'>
@@ -74,7 +90,7 @@ function Login() {
                         <div className='w-[25%] h-[0.5px] bg-[#c4c4c4]'></div>
                     </div>
 
-                    <div className='w-[80%] h-[40px] border-1 border-[#d3d2d2] rounded-[5px] flex items-center justify-center ' ><img src={google} alt="" className='w-[25px]' /><span className='text-[18px] text-gray-500'>oogle</span> </div>
+                    <div className='w-[80%] h-[40px] border-1 border-[#d3d2d2] rounded-[5px] flex items-center justify-center ' onClick={googleSignUp}><img src={google} alt="" className='w-[25px]' /><span className='text-[18px] text-gray-500'>oogle</span> </div>
                     <div className='text-[#6f6f6f]'>Don't have an account? <span className='underline underline-offset-1 text-[black] cursor-pointer' onClick={() => navigate("/signup")}>Sign up</span></div>
 
                 </div>
