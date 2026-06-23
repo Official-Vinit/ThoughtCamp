@@ -14,7 +14,7 @@ export const getCurrentUser=async(req,res)=>{
     }
 }
 
-export const updataProfile = async(req,res)=>{
+export const updateProfile = async(req,res)=>{
     try{
         const userId = req.userId
         const {description, name} = req.body
@@ -26,11 +26,12 @@ export const updataProfile = async(req,res)=>{
             name,
             description,
             photoUrl
-        })
+        },{new: true})
 
         if(!user){
             return res.status(404).json({message:"User not found"})
         }
+
 
         return res.status(200).json(user)
     }catch(error){
