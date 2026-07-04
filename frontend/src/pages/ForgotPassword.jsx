@@ -73,7 +73,7 @@ function ForgotPassword() {
           Forgot Your Password?
         </h2>
 
-          <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
+          <form  className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Enter your email address
@@ -114,7 +114,7 @@ function ForgotPassword() {
 
         {/* OTP Inputs */}
         
-          <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
+          <form  className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Please enter the 4-digit code sent to your email.

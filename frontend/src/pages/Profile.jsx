@@ -40,7 +40,7 @@ function Profile() {
 
           <div className="text-sm">
             <span className="font-semibold text-gray-700">Enrolled Courses: </span>
-            <span>{userData.enrolledCourses?.length}</span>
+            <span>{userData.enrolledCourses.length}</span>
           </div>
         </div>
 

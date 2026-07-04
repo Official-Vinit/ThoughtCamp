@@ -1,48 +1,38 @@
 import express from "express"
 import dotenv from "dotenv"
-dotenv.config()
-import connectDB from "./config/connectDB.js"
-import cors from "cors"
+import connectDb from "./configs/db.js"
+import authRouter from "./routes/authRoute.js"
 import cookieParser from "cookie-parser"
-import authRouter from "./routes/auth.routes.js"
-import userRouter from "./routes/user.routes.js"
-const port = process.env.PORT
+import cors from "cors"
+import userRouter from "./routes/userRoute.js"
+import courseRouter from "./routes/courseRoute.js"
+import paymentRouter from "./routes/paymentRoute.js"
+import aiRouter from "./routes/aiRoute.js"
+import reviewRouter from "./routes/reviewRoute.js"
+dotenv.config()
 
-
-
-const app = express()
-
+let port = process.env.PORT
+let app = express()
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({extended:true}))
 app.use(cors({
-    origin:process.env.CLIENT_URL,
+    origin:"http://localhost:5173",
     credentials:true
 }))
-
-app.use("/api/auth",authRouter)
+app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
+app.use("/api/course", courseRouter)
+app.use("/api/payment", paymentRouter)
+app.use("/api/ai", aiRouter)
+app.use("/api/review", reviewRouter)
 
-app.get("/",(req,res)=>{
-    res.send("Hello from server")
+
+app.get("/" , (req,res)=>{
+    res.send("Hello From Server")
 })
 
-app.get((req,res)=>{
-    res.status(404).send("Page Not Found (404)")
+app.listen(port , ()=>{
+    console.log("Server Started")
+    connectDb()
 })
 
-const startServer = async()=>{
-    try{
-        await connectDB();
-
-        app.listen(port,()=>{
-            console.log(`Server Started at port: ${port}`)
-        })
-
-    }catch(error){
-        console.log(error)
-        process.exit(1)
-    }
-}
-
-startServer();
