@@ -1,4 +1,4 @@
-import uploadOnCloudinary from "../configs/cloudinary.js"
+import uploadOnCloudinary, { deleteFromCloudinary } from "../configs/cloudinary.js"
 import Course from "../models/courseModel.js"
 import Lecture from "../models/lectureModel.js"
 import User from "../models/userModel.js"
@@ -19,7 +19,8 @@ export const createCourse = async (req,res) => {
         
         return res.status(201).json(course)
     } catch (error) {
-         return res.status(500).json({message:`Failed to create course ${error}`})
+         console.error(error);
+         return res.status(500).json({message:"Failed to create course"})
     }
     
 }
@@ -60,19 +61,21 @@ export const editCourse = async (req,res) => {
         const {courseId} = req.params;
         const {title , subTitle , description , category , level , price , isPublished } = req.body;
         let thumbnail
-         if(req.file){
-            thumbnail =await uploadOnCloudinary(req.file.path)
-                }
         let course = await Course.findById(courseId)
         if(!course){
             return res.status(404).json({message:"Course not found"})
         }
+         if(req.file){
+            if(course.thumbnail) await deleteFromCloudinary(course.thumbnail);
+            thumbnail =await uploadOnCloudinary(req.file.path)
+                }
         const updateData = {title , subTitle , description , category , level , price , isPublished ,thumbnail}
 
         course = await Course.findByIdAndUpdate(courseId , updateData , {new:true})
         return res.status(201).json(course)
     } catch (error) {
-        return res.status(500).json({message:`Failed to update course ${error}`})
+        console.error(error);
+        return res.status(500).json({message:"Failed to update course"})
     }
 }
 
@@ -100,10 +103,11 @@ export const removeCourse = async (req, res) => {
     }
 
     await course.deleteOne();
+    if(course.thumbnail) await deleteFromCloudinary(course.thumbnail);
     return res.status(200).json({ message: "Course Removed Successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({message:`Failed to remove course ${error}`})
+    return res.status(500).json({message:"Failed to remove course"})
   }
 };
 
@@ -125,12 +129,13 @@ export const createLecture = async (req,res) => {
             course.lectures.push(lecture._id)
             
         }
-        await course.populate("lectures")
         await course.save()
+        await course.populate("lectures")
         return res.status(201).json({lecture,course})
         
     } catch (error) {
-        return res.status(500).json({message:`Failed to Create Lecture ${error}`})
+        console.error(error);
+        return res.status(500).json({message:"Failed to Create Lecture"})
     }
     
 }
@@ -160,6 +165,7 @@ export const editLecture = async (req,res) => {
         }
         let videoUrl
         if(req.file){
+            if(lecture.videoUrl) await deleteFromCloudinary(lecture.videoUrl, 'video');
             videoUrl =await uploadOnCloudinary(req.file.path)
             lecture.videoUrl = videoUrl
                 }
@@ -171,7 +177,8 @@ export const editLecture = async (req,res) => {
          await lecture.save()
         return res.status(200).json(lecture)
     } catch (error) {
-        return res.status(500).json({message:`Failed to edit Lectures ${error}`})
+        console.error(error);
+        return res.status(500).json({message:"Failed to edit Lectures"})
     }
     
 }
@@ -189,11 +196,13 @@ export const removeLecture = async (req,res) => {
             {lectures: lectureId},
             {$pull:{lectures: lectureId}}
         )
+        if(lecture.videoUrl) await deleteFromCloudinary(lecture.videoUrl, 'video');
         return res.status(200).json({message:"Lecture Remove Successfully"})
         }
     
      catch (error) {
-        return res.status(500).json({message:`Failed to remove Lectures ${error}`})
+        console.error(error);
+        return res.status(500).json({message:"Failed to remove Lectures"})
     }
 }
 
