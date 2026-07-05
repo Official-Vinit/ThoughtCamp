@@ -30,12 +30,21 @@ export const serverUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8
 
 function App() {
   
-  let {userData} = useSelector(state=>state.user)
+  let {userData, isAuthReady} = useSelector(state=>state.user)
 
   getCurrentUser()
   getCouseData()
   getCreatorCourseData()
   getAllReviews()
+
+  if (!isAuthReady) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
+
   return (
     <>
     
