@@ -5,30 +5,37 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: virtualcourses_backend
+    container_name: thoughtcamp-backend
     ports:
       - "8000:8000"
     environment:
       - PORT=8000
       - FRONTEND_URL=http://localhost:5173
       - NODE_ENV=development
-      # IMPORTANT: Define your other necessary environment variables below
-      # or use an env_file as shown below
-      # - MONGODB_URI=your_mongodb_uri
-      # - CLOUDINARY_API_KEY=your_key
-      # - CLOUDINARY_API_SECRET=your_secret
-      # - CLOUDINARY_CLOUD_NAME=your_name
-    # env_file:
-    #   - ./backend/.env
+      - MONGODB_URL="your_mongodb_url"
+      - CLOUDINARY_API_KEY="your_key"
+      - CLOUDINARY_API_SECRET="your_secret"
+      - CLOUDINARY_CLOUD_NAME="your_name"
+      - RAZORPAY_KEY_ID="your_key_id"
+      - RAZORPAY_SECRET="your_secret"
+      - JWT_SECRET="your secret"
+      - EMAIL="your email"
+      - EMAIL_PASS="your email password"
+      - FRONTEND_URL="http://localhost:5173"
+      - GEMINI_API_KEY="your_gemini_api_key"
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: virtualcourses_frontend
+    container_name: thoughtcamp-frontend
     ports:
       - "5173:80"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000
+      - VITE_FIREBASE_APIKEY="your firebase_apikey"
+      - VITE_RAZORPAY_KEY_ID="your razorpay_key_id"
     depends_on:
       - backend
     restart: unless-stopped

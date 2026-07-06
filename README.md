@@ -1,6 +1,6 @@
 <div align="center">
   
-# ThoughtCamp (VirtualCourses) 🎓
+# ThoughtCamp 🎓
 
 A modern, full-stack e-learning platform built with the MERN stack. Empowering educators to create dynamic courses and students to learn seamlessly.
 

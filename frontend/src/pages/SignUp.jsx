@@ -8,7 +8,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { MdRemoveRedEye } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
 import { signInWithPopup } from 'firebase/auth'
-import { auth, provider } from '../../utils/firebase'
+import { auth, provider } from '../../utils/Firebase'
 import { ClipLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
@@ -105,7 +105,7 @@ function SignUp() {
 
             </div>
             <div className='w-[50%] h-[100%] rounded-r-2xl bg-[black] md:flex items-center justify-center flex-col hidden'><img src={logo} className='w-30 shadow-2xl' alt="" />
-            <span className='text-[white] text-2xl'>VIRTUAL COURSES</span>
+            <span className='text-[white] text-2xl'>ThoughtCamp</span>
             </div>
            
         </form>
